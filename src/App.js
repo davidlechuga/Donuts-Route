@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import Mapquest from './Components/Map'
 import Miubicacion from './Components/Miubicacion'
+import Busqueda from './Components/Busqueda'
 
 
 function App() {
   //  state coordenadas
   const [lat, setLat] = useState ('19.3520662')
   const [lng, setLng] = useState('-99.138787')
-  
-  let markers = [];
+  const [markers, setMarkers] = useState([]);
 
   //funciones centro del mapa
   const setCenter = (lat, lng) => {
@@ -33,8 +33,17 @@ function App() {
       }
     )
     .addTo(window.L.mapquest.Map.getMap('map'));
-    markers.push(marker)
+    const copyMarkers = markers.slice(0);
+    copyMarkers.splice(0, 0, marker);
+    setMarkers(copyMarkers);
+  };
 
+    const clearMarkers = () => {
+      markers.forEach(marker => {
+      window.L.mapquest.Map.getMap('map').removeLayer(marker);
+      });
+     // limpiar el state
+      setMarkers([]);
   };
 
   return (
@@ -43,7 +52,11 @@ function App() {
        <div className="container-fluid">
           <div className="row pl-3 pr-3 pb-3">
               <div className="col-sm-10">
-                  Búsqueda
+                 <Busqueda
+                    setCenter={setCenter}
+                    addMarker={addMarker}
+                    clearMarkers={clearMarkers}
+                />
               </div>
               <div className="col-sm-2">
                   <Miubicacion
